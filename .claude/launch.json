@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "softdaiso",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["wrangler@4", "dev", "-c", "wrangler.main.generated.jsonc", "--port", "8787"],
+      "port": 8787
+    }
+  ]
+}

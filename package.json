@@ -1,0 +1,12 @@
+{
+  "name": "softdaiso",
+  "private": true,
+  "type": "module",
+  "description": "소프트 다이소 — 무료 소프트웨어 공식 다운로드 안내 사이트 정적 빌더 (soft.pinda.kr)",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check",
+    "links": "node scripts/check-links.mjs",
+    "deploy": "node scripts/build.mjs && wrangler deploy -c wrangler.main.generated.jsonc"
+  }
+}

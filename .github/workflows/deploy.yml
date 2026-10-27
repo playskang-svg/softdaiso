@@ -1,0 +1,29 @@
+# main 머지로만 배포, PR 에서는 검증·빌드만. 시크릿 CLOUDFLARE_API_TOKEN·CLOUDFLARE_ACCOUNT_ID 가 있어야 배포 단계가 동작한다.
+name: deploy
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/build.mjs
+        env:
+          SEO_NAVER_VERIFY: ${{ vars.NAVER_VERIFY }}
+          SEO_GOOGLE_VERIFY: ${{ vars.GOOGLE_VERIFY }}
+      - name: Deploy
+        if: github.event_name != 'pull_request'
+        run: for F in wrangler.*.generated.jsonc; do echo "▶ $F"; npx --yes wrangler@4 deploy -c "$F"; done
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
